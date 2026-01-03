@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>PickYourCharms</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=2.4">
+    <link rel="stylesheet" href="desktop.css">
+<script src="store_data.js"></script>
+  <script src="desktop.js"></script>
+  <script src="navigation.js"></script>
+</head>
+
+<body>
+
+<header class="navbar">
+  <div class="nav-left"></div>
+
+  <div class="nav-center">
+    <a href="index.html" class="logo-link">
+      <img src="assets/home/PYC_LOGO_TEXT.png" class="logo-img" alt="PickYourCharms">
+    </a>
+  </div>
+
+  <div class="nav-right">
+    <button id="navCartBtn" class="nav-btn" onclick="window.location.href='cart.html'" style="display:none;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 5.68c.496 2.238.242 3.666-2.203 4.095-.97.17-2.025.218-3.116.218-1.09 0-2.146-.048-3.116-.218-2.445-.429-2.7-1.857-2.203-4.095l1.263-5.68c.24-1.08.385-1.92 2.053-2.008 2.025-.107 4.053-.107 6.078 0 1.668.088 1.813.928 2.053 2.008z" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<div style="padding-bottom: 0px;">
+  <section class="hero">
+    <img src="assets/home/banner_vertical.png" loading="eager" fetchpriority="high">
+    <div class="hero-overlay"></div>
+    <div class="hero-text">
+      <h1>Hand-picked.<br>Hand-styled.<br>Made by you.</h1>
+      <p>Create a piece that means something.</p>
+    </div>
+  </section>
+
+  <section class="entry-grid">
+    <div class="entry-card interactive">
+      <div class="card-image"> <img src="assets/home/model_bracelet_mobile.png" loading="lazy"> </div>
+      <h2>Bracelet</h2> <p>Build it charm by charm.</p> 
+      <span class="price-hint" id="braceletPriceDisplay">Starting from ...    </span>
+      <button class="primary-btn" onclick="startFresh('builder.html')">I want to build this →</button>
+    </div>
+
+    <div class="entry-card interactive">
+      <div class="card-image"> <img src="assets/home/model_earring_mobile.png" loading="lazy"> </div>
+      <h2>Earrings</h2> <p>Style both ears your way.</p> 
+      <span class="price-hint" id="earringPriceDisplay">Starting from ...    </span>
+      <button class="primary-btn" onclick="startFresh('earring-builder.html')">Let’s start →</button>
+    </div>
+
+    <div class="entry-card interactive combo-card">
+      <div class="card-image"> 
+        <img src="assets/home/model_combo_mobile.png" loading="lazy"> 
+        <span class="combo-badge" id="comboBadge" style="display:none;">SAVE ... </span> 
+      </div>
+      <h2>Combo</h2> <p>Bracelet + Earrings</p> <span class="price-hint">Better together</span>
+      <button class="primary-btn" onclick="startFresh('builder.html?mode=combo')">I want it all →</button>
+    </div>
+
+    <div class="entry-card interactive curated-card">
+      <div class="card-image"> <img src="assets/home/curated_teaser.png" loading="lazy"> </div>
+      <h2>Curated Pieces</h2> <p>Designed by us, for days you don’t want to decide.</p>
+      <button class="secondary-btn" onclick="window.location.href='curated.html'">Explore curated designs →</button>
+    </div>
+  </section>
+</div>
+
+<div id="resumeBar" class="resume-bar" onclick="resumeDraft()">
+  <div class="resume-info"> <span class="resume-title">I left something unfinished...</span> <span class="resume-sub">Tap to pick up where you left off</span> </div>
+  <div class="resume-btn">Let's finish →</div>
+</div>
+
+<script>
+window.addEventListener('pageshow', function(event) { checkState(); });
+
+function checkState() {
+  const resumeBar = document.getElementById('resumeBar');
+  const cartBtn = document.getElementById('navCartBtn');
+  
+  // 1. Get Data
+  const builderDraft = sessionStorage.getItem('pyc_draft'); // Builder State
+  const checkoutVisited = sessionStorage.getItem('pyc_checkout_visited'); // Checkout Flag
+  const cartData = localStorage.getItem('pyc_cart');
+  const cart = cartData ? JSON.parse(cartData) : [];
+
+  // 2. Logic Hierarchy
+  
+  // PRIORITY 1: Builder (User was just building something)
+  if (builderDraft) {
+    resumeBar.classList.add('show');
+    document.querySelector('.resume-title').textContent = "I left something unfinished...";
+    document.querySelector('.resume-btn').textContent = "Let's finish →";
+    resumeBar.onclick = resumeDraft; 
+  } 
+  // PRIORITY 2: Checkout (User reached checkout, has items, but left)
+  else if (checkoutVisited && cart.length > 0) {
+    resumeBar.classList.add('show');
+    document.querySelector('.resume-title').textContent = "You're almost done! ✨";
+    document.querySelector('.resume-btn').textContent = "Resume Checkout →";
+    // Fix: Go directly to Checkout, not Cart
+    resumeBar.onclick = function() { window.location.href = 'checkout.html'; }; 
+  } 
+  // Default: Hide
+  else {
+    resumeBar.classList.remove('show');
+  }
+
+  // 3. Cart Badge Logic
+  if (cart.length > 0) cartBtn.style.display = 'block';
+  else cartBtn.style.display = 'none';
+}
+
+function resumeDraft() {
+  const draft = JSON.parse(sessionStorage.getItem('pyc_draft'));
+  if (draft && draft.url) {
+    const separator = draft.url.includes('?') ? '&' : '?';
+    window.location.href = draft.url + separator + 'resume=true';
+  }
+}
+
+function startFresh(url) {
+  sessionStorage.removeItem('pyc_draft');
+  sessionStorage.removeItem('combo_bracelet_data');
+  sessionStorage.removeItem('combo_earring_data');
+  window.location.href = url;
+}
+// Add this INSIDE the <script> tag in Index.html
+function updateHomePagePrices() {
+  const config = JSON.parse(localStorage.getItem('pyc_config') || "{}");
+  
+  // 1. Update Bracelet Base Price
+  if (config.bracelet_base_price) {
+    document.getElementById('braceletPriceDisplay').textContent = `Starting from Rs. ${config.bracelet_base_price}`;
+  }
+
+  // 2. Update Earring Base Price
+  if (config.earring_base_price) {
+    document.getElementById('earringPriceDisplay').textContent = `Starting from Rs. ${config.earring_base_price}`;
+  }
+
+  // 3. Update Combo Badge
+  const badgeEl = document.getElementById('comboBadge');
+  if (config.show_combo_badge === "TRUE" || config.show_combo_badge === true) {
+    badgeEl.style.display = 'block';
+    if (config.combo_badge_text) {
+      badgeEl.textContent = config.combo_badge_text;
+    }
+  } else {
+    badgeEl.style.display = 'none';
+  }
+}
+
+// Call on load in case data is already there
+document.addEventListener('DOMContentLoaded', updateHomePagePrices);
+</script>
+  <footer class="site-footer">
+  <div class="footer-content">
+    <span class="footer-brand">PickYourCharms</span>
+    <div class="footer-links">
+      <a href="policies.html#terms" class="footer-link">Terms & Conditions</a>
+      <a href="policies.html#refund" class="footer-link">Refund Policy</a>
+      <a href="policies.html#return" class="footer-link">Return Policy</a>
+      <a href="policies.html#shipping" class="footer-link">Shipping Policy</a>
+      <a href="policies.html#privacy" class="footer-link">Privacy Policy</a>
+    </div>
+    <div class="footer-copyright">© 2026 PickYourCharms. All rights reserved.</div>
+  </div>
+</footer>
+</body>
+</html>
+
+
+
+
+
+
