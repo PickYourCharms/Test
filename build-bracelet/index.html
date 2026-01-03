@@ -4,11 +4,11 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Build My Bracelet</title>
-<link rel="stylesheet" href="styles.css?v=2.4">
-  <link rel="stylesheet" href="desktop.css">
-<script src="store_data.js"></script>
-  <script src="desktop.js"></script>
-  <script src="navigation.js"></script>
+<link rel="stylesheet" href="/styles.css?v=2.4">
+<link rel="stylesheet" href="/desktop.css">
+<script src="/store_data.js"></script>
+<script src="/desktop.js"></script>
+<script src="/navigation.js"></script>
 <style>
 /* Internal overrides */
 body { background: #f6f3ec; }
@@ -73,13 +73,13 @@ h2 { margin: 8px 0 10px; text-align: center; }
   </div>
 
   <div class="nav-center">
-    <a href="index.html" class="logo-link">
-      <img src="assets/home/PYC_LOGO_TEXT.png" class="logo-img" alt="PickYourCharms">
-    </a>
+    <a href="/" class="logo-link">
+  <img src="/assets/home/PYC_LOGO_TEXT.png" class="logo-img" alt="PickYourCharms">
+</a>
   </div>
 
   <div class="nav-right">
-    <button id="navCartBtn" class="nav-btn" onclick="window.location.href='cart.html'">
+    <button id="navCartBtn" class="nav-btn" onclick="window.location.href='/cart/'">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 5.68c.496 2.238.242 3.666-2.203 4.095-.97.17-2.025.218-3.116.218-1.09 0-2.146-.048-3.116-.218-2.445-.429-2.7-1.857-2.203-4.095l1.263-5.68c.24-1.08.385-1.92 2.053-2.008 2.025-.107 4.053-.107 6.078 0 1.668.088 1.813.928 2.053 2.008z" />
       </svg>
@@ -97,7 +97,7 @@ h2 { margin: 8px 0 10px; text-align: center; }
 
 <div class="builder-surface">
     <div class="canvas" id="canvas">
-      <img id="bracelet" class="bracelet" src="assets/bases/bracelet_base_gold.png">
+      <img id="bracelet" class="bracelet" src="/assets/bases/bracelet_base_gold.png">
       <div id="pricePill" class="price-pill"></div>
     </div>
 
@@ -114,8 +114,8 @@ h2 { margin: 8px 0 10px; text-align: center; }
 <button id="cta" class="cta">Love it · Add to Bag</button>
 
 <div class="post-actions-container">
-  <button class="action-btn btn-build-more" onclick="window.location.href='index.html'">Build More</button>
-  <button class="action-btn btn-view-cart" onclick="window.location.href='cart.html'">View Cart</button>
+  <button class="action-btn btn-build-more" onclick="window.location.href='/'">Build More</button>
+<button class="action-btn btn-view-cart" onclick="window.location.href='/cart/'">View Cart</button>
 </div>
 
 <div id="modal" class="modal">
@@ -209,20 +209,20 @@ function init() {
   
   setTimeout(() => { window.history.pushState({ page: 'loaded' }, null, window.location.href); }, 100);
   window.onpopstate = function (event) {
-    if (document.body.classList.contains('frozen-state')) { window.location.href = 'index.html'; return; }
+    if (document.body.classList.contains('frozen-state')) { window.location.href = '/'; return; }
     goBack(); 
   };
 }
 
 function saveDraft() {
   if (charms.length === 0) { sessionStorage.removeItem('pyc_draft'); return; }
-  const draftData = { url: 'builder.html' + window.location.search, data: { metal, charms }, timestamp: Date.now() };
+  const draftData = { url: 'build-bracelet/' + window.location.search, data: { metal, charms }, timestamp: Date.now() };
   sessionStorage.setItem('pyc_draft', JSON.stringify(draftData));
 }
 
 function goBack() {
-  if (document.body.classList.contains('frozen-state')) { window.location.href = 'index.html'; return; }
-  if (isCombo) { window.location.href = 'index.html'; } else { history.back(); }
+  if (document.body.classList.contains('frozen-state')) { window.location.href = '/'; return; }
+if (isCombo) { window.location.href = '/'; } else { history.back(); }
 }
 
 function loadTray() {
@@ -254,7 +254,7 @@ function loadTray() {
     // ===========================
 
     const img = document.createElement('img');
-    img.src = 'assets/charms/' + file;
+    img.src = '/assets/charms/' + file;
     img.onclick = () => addCharm(file);
     tray.appendChild(img);
   });
@@ -369,7 +369,7 @@ function render(){
     w.style.transform='rotate('+(a-90)+'deg)';
     
     const img=document.createElement('img');
-    img.src='assets/charms/'+file;
+    img.src='/assets/charms/'+file;
     w.appendChild(img);
     w.onclick=()=>{
       if(document.body.classList.contains('frozen-state')) return;
@@ -392,7 +392,7 @@ function onResetClick(){
 }
 
 function updateMetal(){
-  bracelet.src='assets/bases/bracelet_base_'+metal+'.png';
+  bracelet.src='/assets/bases/bracelet_base_'+metal+'.png';
   document.getElementById('goldBtn').classList.toggle('active',metal==='gold');
   document.getElementById('silverBtn').classList.toggle('active',metal==='silver');
   loadTray();
@@ -410,12 +410,12 @@ cta.onclick = function() {
     if (stashedEarrings) nextEarringState = JSON.parse(stashedEarrings);
 
     const draftData = {
-      url: 'earring-builder.html?mode=combo',
+      url: 'style-earrings/?mode=combo',
       data: nextEarringState,
       comboContext: { bracelet: state }
     };
     sessionStorage.setItem('pyc_draft', JSON.stringify(draftData));
-    window.location.href = 'earring-builder.html?mode=combo';
+    window.location.href = '/style-earrings/?mode=combo';
   } else {
     const product = {
       id: Date.now(),
@@ -423,7 +423,7 @@ cta.onclick = function() {
       metal: metal,
       charms: charms,
       price: calculateCurrentPrice(),
-      image: 'assets/bases/bracelet_base_'+metal+'.png'
+      image: '/assets/bases/bracelet_base_'+metal+'.png'
     };
     addToCart(product);
   }
