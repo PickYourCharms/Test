@@ -1049,8 +1049,8 @@ function editItem(index, subType) {
   if (item.type.includes('Combo')) {
     if (subType === 'bracelet') {
       sessionStorage.setItem('combo_earring_data', JSON.stringify(item.earrings));
-      draft = { url: 'builder.html?mode=combo', data: { metal: item.bracelet.metal, charms: item.bracelet.charms } };
-      url = 'builder.html?mode=combo&resume=true';
+      draft = { url: 'build-bracelet/?mode=combo', data: { metal: item.bracelet.metal, charms: item.bracelet.charms } };
+      url = '/build-bracelet/?mode=combo&resume=true';
     } else {
       sessionStorage.setItem('combo_bracelet_data', JSON.stringify(item.bracelet));
       draft = { 
@@ -1062,8 +1062,8 @@ function editItem(index, subType) {
     }
   } 
   else if (item.type === 'Bracelet') {
-    draft = { url: 'builder.html', data: { metal: item.metal, charms: item.charms } };
-    url = 'builder.html?resume=true';
+    draft = { url: 'build-bracelet/', data: { metal: item.metal, charms: item.charms } };
+    url = '/build-bracelet/?resume=true';
   } 
   else { 
     draft = { url: 'earring-builder.html', data: { metal: item.metal, charms: item.charms } };
